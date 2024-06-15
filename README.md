@@ -1,12 +1,23 @@
 # push_noti
 
-A new Flutter project.
+"Пустое приложение для принятия push-уведомлений через Firebase."
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+pubspec.yaml
 
-A few resources to get you started if this is your first Flutter project:
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+  firebase_core: ^3.1.0
+  firebase_messaging: ^15.0.1
+  cached_network_image: ^3.1.0
+  path_provider: ^2.0.2
+  permission_handler: ^11.3.1
+  intl: ^0.17.0
+  shared_preferences: ^2.0.0
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
