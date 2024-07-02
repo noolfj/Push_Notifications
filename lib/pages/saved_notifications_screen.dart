@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'notification_storage.dart'; 
+import 'notification_storage.dart';
 
 class SavedNotificationsScreen extends StatefulWidget {
+  const SavedNotificationsScreen({Key? key}) : super(key: key);
+
   @override
   _SavedNotificationsScreenState createState() => _SavedNotificationsScreenState();
 }
@@ -13,8 +15,9 @@ class _SavedNotificationsScreenState extends State<SavedNotificationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Сохраненные уведомления',
-        style: TextStyle(color: Colors.white),
+        title: Text(
+          'Сохраненные уведомления',
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Color(0xff025097),
         iconTheme: IconThemeData(color: Colors.white),
@@ -44,10 +47,28 @@ class _SavedNotificationsScreenState extends State<SavedNotificationsScreen> {
             return Center(child: Text('Нет сохраненных уведомлений'));
           }
 
+          // Удаление дубликатов уведомлений
+          Set<String> uniqueNotifications = {};
+          List<String> uniqueNotificationsList = [];
+
+          for (String notification in notifications) {
+            List<String> notificationData = notification.split('|');
+            String title = notificationData[0];
+            String body = notificationData[1];
+            String dateTime = notificationData[2];
+            String notificationKey = '$title|$body|$dateTime';
+
+            // Проверяем наличие уникального ключа в множестве
+            if (!uniqueNotifications.contains(notificationKey)) {
+              uniqueNotifications.add(notificationKey);
+              uniqueNotificationsList.add(notification);
+            }
+          }
+
           return ListView.builder(
-            itemCount: notifications.length,
+            itemCount: uniqueNotificationsList.length,
             itemBuilder: (context, index) {
-              List<String> notificationData = notifications[index].split('|');
+              List<String> notificationData = uniqueNotificationsList[index].split('|');
               String title = notificationData[0];
               String body = notificationData[1];
               String dateTime = notificationData[2];
@@ -73,7 +94,7 @@ class _SavedNotificationsScreenState extends State<SavedNotificationsScreen> {
   void _deleteAllNotifications(BuildContext context) async {
     try {
       await _notificationStorage.deleteAllNotifications();
-      setState(() {});
+      setState(() {}); 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Все уведомления удалены")),
       );

@@ -5,6 +5,7 @@ import 'package:push_noti/firebase_options.dart';
 import 'package:push_noti/pages/firebase_messaging.dart';
 import 'package:push_noti/pages/home_page.dart';
 import 'package:push_noti/pages/notification_page.dart';
+import 'package:push_noti/pages/saved_notifications_screen.dart'; 
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       routes: {
-        '/notification_screen': (context) =>  NotificationPage(),
+        '/notification_screen': (context) => NotificationPage(),
+        '/saved_notifications': (context) => SavedNotificationsScreen(), 
       },
     );
   }

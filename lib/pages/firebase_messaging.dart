@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'notification_storage.dart'; 
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -11,34 +12,30 @@ void initializeFirebaseMessaging() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
- // Обработка уведомлений, полученных во время активного использования приложения
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Received message in foreground: ${message.notification?.title}');
-  // Здесь можно добавить логику для обработки уведомления во фронтэнде
+    print('Получено сообщение в активном режиме: ${message.notification?.title}');
+    _saveNotification(message.notification!.title ?? '', message.notification!.body ?? '', message.sentTime.toString());
   });
 
-
-  // Обработка случая, когда пользователь тапает на уведомление и приложение открыто
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print('User tapped notification: ${message.notification?.title}');
- 
+    print('Пользователь тапнул по уведомлению: ${message.notification?.title}');
+    _saveNotification(message.notification!.title ?? '', message.notification!.body ?? '', message.sentTime.toString());
     navigatorKey.currentState?.pushNamed('/notification_screen', arguments: message);
   });
-
-  // Request permission for iOS devices
-  // NotificationSettings settings = await messaging.requestPermission(
-  //   alert: true,
-  //   badge: true,
-  //   sound: true,
-  // );
-  // print('User granted permission: ${settings.authorizationStatus}');
 
   String? token = await messaging.getToken();
   print('FCM token: $token');
 }
 
-// Background message handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message: ${message.notification?.title}');
-  // Handle your background message here
+  print('Обработка фонового сообщения: ${message.notification?.title}');
+  await NotificationStorage().saveNotification(
+    message.notification?.title ?? '',
+    message.notification?.body ?? '',
+    message.sentTime.toString(),
+  );
+}
+
+void _saveNotification(String title, String body, String dateTime) async {
+  await NotificationStorage().saveNotification(title, body, dateTime);
 }
